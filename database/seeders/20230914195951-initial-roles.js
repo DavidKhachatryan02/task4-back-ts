@@ -1,6 +1,6 @@
 "use strict";
 
-// const { models } = require("../../src/services/sequelize");
+const { models } = require("../../src/services/sequelize");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {

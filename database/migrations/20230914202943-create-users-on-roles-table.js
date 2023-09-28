@@ -1,19 +1,18 @@
 "use strict";
 
-import { QueryInterface, DataTypes } from "sequelize";
-
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface: QueryInterface, Sequelize: any): Promise<void> {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable("users_on_roles", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
       },
       roleId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         references: {
           key: "id",
           model: "roles",
@@ -23,7 +22,7 @@ module.exports = {
       },
       userId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         references: {
           key: "id",
           model: "users",
@@ -33,16 +32,16 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
     });
   },
 
-  async down(queryInterface: QueryInterface, Sequelize: any): Promise<void> {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("users_on_roles");
   },
 };

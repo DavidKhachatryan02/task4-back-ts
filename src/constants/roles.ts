@@ -1,4 +1,4 @@
-export const ROLES = {
+const ROLES = {
   ADMIN: {
     id: 1,
     name: "Admin",
@@ -12,3 +12,5 @@ export const ROLES = {
     name: "User",
   },
 };
+
+export default ROLES;

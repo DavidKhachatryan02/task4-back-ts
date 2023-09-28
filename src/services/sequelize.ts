@@ -46,7 +46,7 @@ Card.belongsTo(User, { foreignKey: "userId" });
 Products.hasMany(Card, { foreignKey: "productId" });
 User.hasMany(Card, { foreignKey: "userId" });
 
-export const model = {
+export const models = {
   User,
   Role,
   UsersOnRoles,

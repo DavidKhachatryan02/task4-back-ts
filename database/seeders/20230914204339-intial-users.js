@@ -1,7 +1,7 @@
 "use strict";
-import { hash } from "bcrypt";
-// const { models } = require("../../src/services/sequelize");
-import { BCRYPT_SALT_ROUNDS }  from "../../constants/config";
+const { hash } = require("bcrypt");
+const { models } = require("../../src/services/sequelize");
+const { BCRYPT_SALT_ROUNDS } = require("../../src/constants/config");
 const { generateToken, generateRefreshToken } = require("../../src/utils");
 
 /** @type {import('sequelize-cli').Migration} */
