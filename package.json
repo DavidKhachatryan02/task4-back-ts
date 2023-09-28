@@ -1,0 +1,8 @@
+{
+  "name": "task-4-back-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/DavidKhachatryan02/task4-back-ts.git",
+  "author": "davidkhachatryan02 <dkhachatryan043@gmail.com>",
+  "license": "MIT"
+}
