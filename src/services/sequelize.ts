@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize";
-import { dialect } from "../constants/config";
-import  DB_URL  from "../constants/env";
+import { DB_URL, dialect } from "../constants/env";
 
 // Sequelize models
 import { RoleModel } from "../models/roles.model";
@@ -55,4 +54,7 @@ export const models = {
   ProductImg,
 };
 
-export default sequelize;
+module.exports = sequelize;
+export default models;
+
+//! NEED TO FIX

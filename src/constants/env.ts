@@ -1,8 +1,9 @@
+import { Dialect } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const DB_URL: string = process.env.DATABASE_URL || "";
+export const DB_URL: string = process.env.DATABASE_URL || "";
+export const dialect: Dialect = "postgres";
 
-module.exports = DB_URL;
-export default DB_URL;
+//!NOT USED NEED TO FIX

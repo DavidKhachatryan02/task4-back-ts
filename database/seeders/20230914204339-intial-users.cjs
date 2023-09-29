@@ -7,7 +7,7 @@ const { generateToken, generateRefreshToken } = require("../../src/utils");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const initialUser = await models.users.findOne({
+    const initialUser = await models.User.findOne({
       where: {
         email: "test@test.com",
       },
@@ -19,7 +19,7 @@ module.exports = {
     const accessToken = generateToken("test@test.com");
     const refreshToken = generateRefreshToken();
 
-    await models.users.create({
+    await models.User.create({
       name: "test-user",
       email: "test@test.com",
       password: passwordHash,

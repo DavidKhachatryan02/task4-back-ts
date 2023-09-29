@@ -1,36 +1,33 @@
 "use strict";
 
-const { models } = require("../../src/services/sequelize");
+import { models } from "../../src/services/sequelize";
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    const userEmail = "test@test.com";
-    const productName = "testProduct";
+export async function up(queryInterface, Sequelize) {
+  const userEmail = "test@test.com";
+  const productName = "testProduct";
 
-    const user = await models.users.findOne({
-      where: { email: userEmail },
-      attributes: ["id"],
-    });
-    const product = await models.products.findOne({
-      where: { name: productName },
-      attributes: ["id"],
-    });
+  const user = await models.User.findOne({
+    where: { email: userEmail },
+    attributes: ["id"],
+  });
+  const product = await models.Products.findOne({
+    where: { name: productName },
+    attributes: ["id"],
+  });
 
-    if (!user || !product) return;
+  if (!user || !product) return;
 
-    const initialCard = await models.card.findOne({
-      where: { userId: user.id },
-    });
+  const initialCard = await models.Card.findOne({
+    where: { userId: user.id },
+  });
 
-    if (initialCard) return;
+  if (initialCard) return;
 
-    await models.card.create({
-      productId: product.id,
-      userId: user.id,
-    });
-  },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("card", null, {});
-  },
-};
+  await models.Card.create({
+    productId: product.id,
+    userId: user.id,
+  });
+}
+export async function down(queryInterface, Sequelize) {
+  await queryInterface.bulkDelete("card", null, {});
+}

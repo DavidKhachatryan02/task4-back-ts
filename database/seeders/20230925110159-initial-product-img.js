@@ -1,25 +1,22 @@
 "use strict";
 
-const { models } = require("../../src/services/sequelize");
+import { models } from "../../src/services/sequelize";
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    const productName = "testProduct";
+export async function up(queryInterface, Sequelize) {
+  const productName = "testProduct";
 
-    const product = await models.products.findOne({
-      where: { name: productName },
-      attributes: ["id"],
-    });
+  const product = await models.Products.findOne({
+    where: { name: productName },
+    attributes: ["id"],
+  });
 
-    if (!product) return;
+  if (!product) return;
 
-    await models.product_Images.create({
-      productId: product.id,
-      imgUrl: "InitialImgUrl",
-    });
-  },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("product_Images", null, {});
-  },
-};
+  await models.ProductImg.create({
+    productId: product.id,
+    imgUrl: "InitialImgUrl",
+  });
+}
+export async function down(queryInterface, Sequelize) {
+  await queryInterface.bulkDelete("product_Images", null, {});
+}
