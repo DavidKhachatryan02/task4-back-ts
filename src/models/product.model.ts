@@ -15,7 +15,8 @@ export const ProductModel = (sequelizeClient: Sequelize) => {
     },
     {
       sequelize: sequelizeClient,
-      modelName: "Product",
+      modelName: "Products",
+      tableName: "products",
     }
   );
 
