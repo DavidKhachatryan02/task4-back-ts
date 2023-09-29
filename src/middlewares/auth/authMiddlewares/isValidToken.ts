@@ -10,7 +10,9 @@ export const isValidToken = async (
   try {
     const { refreshToken, accessToken } = req.body;
 
-    const user = await models.users.findOne({ where: { refreshToken } });
+    const user = await models.User.findOne({ where: { refreshToken } });
+
+    if (!user) return next(new InvalidAccessToken());
 
     if (accessToken !== user.accessToken) {
       return next(new InvalidAccessToken());

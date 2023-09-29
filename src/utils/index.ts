@@ -7,7 +7,7 @@ export const generateToken = (data: number): string => {
   });
 };
 
-export const verifyAuthToken = (accessToken: string) => {
+export const verifyAuthToken = (accessToken: string): any => {
   return jwt.verify(accessToken, JWT_SECRET_KEY);
 };
 

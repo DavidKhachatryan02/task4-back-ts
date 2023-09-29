@@ -5,9 +5,9 @@ import { ProductValidation } from "./bodyValidations/ProductValidation";
 import { AddToCardValidation } from "./bodyValidations/AddToCardValidation";
 import { RemoveImgValidation } from "./bodyValidations/RemoveImgValidation";
 import { isImgAdded } from "./productMiddlewares/isImgAdded";
-import { isImgExists } from "./productMiddlewares/isImgExists";
-import { isUserAdmin } from "./productMiddlewares/isUserAdmin";
-import { isUserCustomer } from "./productMiddlewares/isUserCustomer";
+// import { isImgExists } from "./productMiddlewares/isImgExists";
+// import { isUserAdmin } from "./productMiddlewares/isUserAdmin";
+// import { isUserCustomer } from "./productMiddlewares/isUserCustomer";
 
 export {
   AddToCardValidation,
@@ -17,7 +17,7 @@ export {
   ProductValidation,
   RemoveImgValidation,
   isImgAdded,
-  isImgExists,
-  isUserAdmin,
-  isUserCustomer,
+  // isImgExists,
+  // isUserAdmin,
+  // isUserCustomer,
 };

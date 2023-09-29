@@ -27,5 +27,3 @@ export const LoginValidation = (
     next(e);
   }
 };
-
-module.exports = LoginValidation;

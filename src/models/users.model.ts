@@ -7,6 +7,7 @@ class User extends Model {
   public password!: string;
   public refreshToken!: string | null;
   public accessToken!: string | null;
+  Roles: any;
 }
 
 export const UserModel = (sequelizeClient: Sequelize) => {

@@ -1,15 +1,26 @@
-const ROLES = {
+interface ROLE {
+  id: number;
+  RoleName: string;
+}
+
+interface IRoles {
+  ADMIN: ROLE;
+  CUSTOMER: ROLE;
+  USER: ROLE;
+}
+
+const ROLES: IRoles = {
   ADMIN: {
     id: 1,
-    name: "Admin",
+    RoleName: "Admin",
   },
   CUSTOMER: {
     id: 2,
-    name: "Customer",
+    RoleName: "Customer",
   },
   USER: {
     id: 3,
-    name: "User",
+    RoleName: "User",
   },
 };
 

@@ -10,7 +10,7 @@ export const isImgAdded = async (
   try {
     const { productId, imgUrl } = req.body;
 
-    const imgAdded = await models.product_Images.findOne({
+    const imgAdded = await models.ProductImg.findOne({
       where: { productId, imgUrl },
     });
 

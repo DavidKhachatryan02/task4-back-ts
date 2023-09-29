@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { models } from "../../../services/sequelize";
-import { ROLES } from "../../../constants/roles";
-import { UserHaveRole } from "../../../errors/auth";
+import ROLES from "../../../constants/roles";
+import { UserHaveRole, UserNotExists } from "../../../errors/auth";
 
 export const isUserHaveRole = async (
   req: Request,
@@ -10,24 +10,30 @@ export const isUserHaveRole = async (
 ) => {
   try {
     const { email, role } = req.body;
-    const roleId = ROLES[await role.toUpperCase()].id;
-    const user = await models.users.findOne({
+    const roleId = ROLES[(await role.toUpperCase()) as keyof typeof ROLES].id;
+    const user = await models.User.findOne({
       where: { email },
       include: {
-        model: models.roles,
+        model: models.Role,
       },
     });
 
-    const userRoles = user.roles.map((role) => role.id);
+    if (!user) return next(new UserNotExists(email));
 
-    if (userRoles.includes(roleId)) {
+    console.log(user);
+
+    const roleIds = user.Roles.map((role: { id: number }) => role.id);
+
+    if (roleIds.includes(roleId)) {
       return next(
-        new UserHaveRole(email, ROLES[await role.toUpperCase()].name)
+        new UserHaveRole(
+          email,
+          ROLES[(await role.toUpperCase()) as keyof typeof ROLES].RoleName
+        )
       );
     }
 
     req.user = user;
-    req.roleId = roleId;
 
     next();
   } catch (e) {

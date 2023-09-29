@@ -3,32 +3,30 @@ import { compare, hash } from "bcrypt";
 import { generateToken, generateRefreshToken, verifyAuthToken } from "../utils";
 import { JWT_EXPIRE_TIME, BCRYPT_SALT_ROUNDS } from "../constants/config";
 import ROLES from "../constants/roles";
-import { InvalidCredentialsError, NoSuchRole } from "../errors/auth";
+import {
+  InvalidCredentialsError,
+  NoSuchRole,
+  UnAuthorizedError,
+} from "../errors/auth";
 import { models } from "../services/sequelize";
 
-const getMe = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const getMe = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const email = req.user.data as string;
+    const email = req.user.data;
 
-    const userData = await models.users.findOne({
+    const userData = await models.User.findOne({
       where: { email },
       attributes: { exclude: ["password", "refreshToken", "accessToken"] },
       include: {
-        model: models.roles,
+        model: models.Role,
+        attributes: ["name", "id"],
+        through: { attributes: [] },
       },
     });
 
-    const userRoles = userData.roles.map((role) => role.name);
+    if (!userData) return next(new InvalidCredentialsError());
 
-    const { roles, ...user } = userData.dataValues;
-
-    user.roles = userRoles;
-
-    res.status(200).json(user);
+    res.status(200).json(userData);
 
     next(null);
   } catch (e) {
@@ -38,26 +36,24 @@ const getMe = async (
   }
 };
 
-const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, name, userRole } = req.body;
     const hashedPassword = await hash(password, BCRYPT_SALT_ROUNDS);
     const refreshToken = generateRefreshToken();
     const accessToken = generateToken(email);
 
-    const roleId = ROLES[userRole.toUpperCase()].id;
+    const roleName: string = userRole.toUpperCase();
 
-    const role = await models.roles.findOne({ where: { id: roleId } });
+    const roleId: number = ROLES[roleName as keyof typeof ROLES].id;
+
+    const role = await models.Role.findOne({ where: { id: roleId } });
 
     if (!role) {
       return next(new NoSuchRole());
     }
 
-    const user = await models.users.create({
+    const user = await models.User.create({
       email,
       name,
       refreshToken,
@@ -65,7 +61,7 @@ const register = async (
       password: hashedPassword,
     });
 
-    await models.users_on_roles.create({
+    await models.UsersOnRoles.create({
       userId: user.dataValues.id,
       roleId: role.dataValues.id,
     });
@@ -80,11 +76,7 @@ const register = async (
   }
 };
 
-const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.user;
     const userPassword = req.body.password;
@@ -97,7 +89,7 @@ const login = async (
 
     const accessToken = generateToken(email);
 
-    await models.users.update({ accessToken }, { where: { email } });
+    await models.User.update({ accessToken }, { where: { email } });
 
     res.status(200).json({
       accessToken,
@@ -116,13 +108,13 @@ const refreshToken = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+) => {
   try {
     const { email } = req.user.dataValues;
 
     const newAccessToken = generateToken(email);
 
-    await models.users.update(
+    await models.User.update(
       { accessToken: newAccessToken },
       { where: { email } }
     );
@@ -140,16 +132,13 @@ const refreshToken = async (
   }
 };
 
-const logout = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.headers.authorization) return next(new UnAuthorizedError());
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const email = verifyAuthToken(accessToken).data;
 
-    await models.users.update({ accessToken: null }, { where: { email } });
+    await models.User.update({ accessToken: null }, { where: { email } });
     res.status(200).end();
 
     next(null);
@@ -163,21 +152,23 @@ const addRoleToUser = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+) => {
   try {
     const { role, email } = req.body;
 
-    const roleId = ROLES[role.toUpperCase()].id;
+    const roleId: number = ROLES[role as keyof typeof ROLES].id;
 
-    const userRole = await models.roles.findOne({ where: { id: roleId } });
+    const userRole = await models.Role.findOne({ where: { id: roleId } });
 
     if (!userRole) {
       return next(new NoSuchRole());
     }
 
-    const user = await models.users.findOne({ where: { email } });
+    const user = await models.User.findOne({ where: { email } });
 
-    await models.users_on_roles.create({
+    if (!user) return next(new UnAuthorizedError());
+
+    await models.UsersOnRoles.create({
       userId: user.dataValues.id,
       roleId: userRole.dataValues.id,
     });
@@ -193,15 +184,11 @@ const addRoleToUser = async (
   }
 };
 
-const deleteUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
-    await models.users.destroy({
+    await models.User.destroy({
       where: {
         email,
       },

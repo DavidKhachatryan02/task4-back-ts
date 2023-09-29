@@ -9,7 +9,7 @@ export const isUserRegistered = async (
 ) => {
   try {
     const { email } = req.body;
-    const user = await models.users.findOne({ where: { email } });
+    const user = await models.User.findOne({ where: { email } });
     if (user) {
       return next(new UserExists(email));
     }
