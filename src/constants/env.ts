@@ -2,4 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const DB_URL: string = process.env.DATABASE_URL || "";
+const DB_URL: string = process.env.DATABASE_URL || "";
+
+module.exports = DB_URL;
+export default DB_URL;

@@ -8,6 +8,7 @@ enum RoleName {
 
 class Role extends Model {
   public name!: RoleName;
+  id: any;
 }
 
 export const RoleModel = (sequelizeClient: Sequelize) => {

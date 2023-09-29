@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { JWT_SECRET_KEY, JWT_EXPIRE_TIME } from "../constants/config";
 
-export const generateToken = (data: number): string => {
+export const generateToken = (data: number | string): string => {
   return jwt.sign({ data }, JWT_SECRET_KEY, {
     expiresIn: JWT_EXPIRE_TIME,
   });

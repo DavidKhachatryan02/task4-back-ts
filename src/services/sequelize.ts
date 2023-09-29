@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import { dialect } from "../constants/config";
-import { DB_URL } from "../constants/env";
+import  DB_URL  from "../constants/env";
 
 // Sequelize models
 import { RoleModel } from "../models/roles.model";

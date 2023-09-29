@@ -4,6 +4,7 @@ class Product extends Model {
   public name!: string;
   public price!: number;
   public description!: string;
+  id: any;
 }
 
 export const ProductModel = (sequelizeClient: Sequelize) => {
